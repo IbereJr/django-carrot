@@ -128,12 +128,13 @@ class ScheduledTask(models.Model):
     interval_count = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
 
     exchange = models.CharField(max_length=200, blank=True, null=True)
+    start_time = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])
     routing_key = models.CharField(max_length=200, blank=True, null=True)
     queue = models.CharField(max_length=200, blank=True, null=True)
     task = models.CharField(max_length=200)
     task_args = models.TextField(null=True, blank=True, verbose_name='Positional arguments')
     content = models.TextField(null=True, blank=True, verbose_name='Keyword arguments')
-
+    priority = models.PositiveIntegerField(default=0)
     active = models.BooleanField(default=True)
 
     task_name = models.CharField(max_length=200, unique=True)

@@ -5,8 +5,11 @@ consume
 Most users should use the functions defined in this module, rather than attempting to subclass the base level objects
 
 """
+
+import re
 import json
 import importlib
+import datetime
 from django.conf import settings
 from carrot.objects import VirtualHost, Message
 from carrot.models import ScheduledTask, MessageLog
@@ -147,6 +150,8 @@ def publish_message(task: Union[str, Callable],
 def create_scheduled_task(task: Union[str, Callable],
                           interval: Dict[str, int],
                           task_name: str = None,
+                          at: str = None,
+                          priority: int = 0,
                           queue: str = None,
                           **kwargs) -> ScheduledTask:
     """
@@ -169,12 +174,19 @@ def create_scheduled_task(task: Union[str, Callable],
 
     interval_type, count = list(*interval.items())
 
+    if at:
+        hr, mm = re.match('\+?(\d{1,2}):?(\d{2})', at).group(1, 2)
+        start_time=(int(hr)*3600+int(mm)*60)
+    else: start_time=0
+
     try:
         t = ScheduledTask.objects.create(
                 queue=queue,
                 task_name=task_name,
                 interval_type=interval_type,
                 interval_count=count,
+                start_time=start_time,
+                priority=priority,           
                 routing_key=queue,
                 task=task,
                 content=json.dumps(kwargs or '{}'),
@@ -182,7 +194,6 @@ def create_scheduled_task(task: Union[str, Callable],
     except IntegrityError:
         raise IntegrityError('A ScheduledTask with this task_name already exists. Please specific a unique name using '
                              'the task_name parameter')
-
     return t
 
 

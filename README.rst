@@ -1,26 +1,12 @@
-.. image:: https://coveralls.io/repos/github/chris104957/django-carrot/badge.svg?branch=master
-    :target: https://coveralls.io/github/chris104957/django-carrot?branch=master
-
-.. image:: https://readthedocs.org/projects/django-carrot/badge/?version=latest
-    :target: http://django-carrot.readthedocs.io/en/latest/?badge=
-
-.. image:: https://travis-ci.org/chris104957/django-carrot.svg?branch=master
-    :target: https://travis-ci.org/chris104957/django-carrot.svg?branch=master
-
-.. image:: https://coveralls.io/repos/github/chris104957/django-carrot/badge.svg?branch=master
-    :target: https://coveralls.io/github/chris104957/django-carrot?branch=master)
-
-.. image:: https://badge.fury.io/py/django-carrot.svg
-    :target: https://badge.fury.io/py/django-carrot
-
-.. image:: https://img.shields.io/badge/License-Apache%202.0-blue.svg
-    :target: https://opensource.org/licenses/Apache-2.0
-
-.. image:: /docs/source/images/carrot-logo-big.png
-    :align: center
-
 **django-carrot** is a lightweight task queue backend for Django projects that uses the RabbitMQ message broker, with
 an emphasis on quick and easy configuration and task tracking
+
+Alteracoes desta Versao:
+------------------------
+
+1. Correcao da tag staticfiles para static (django 3)
+2. Inclusão da propriedade Priority no agendamento
+3. Inclusão da propriedade at "hh:mm" para agendamento em horário fixo
 
 Installation
 ------------

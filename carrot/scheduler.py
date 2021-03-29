@@ -25,7 +25,9 @@ class ScheduledTaskThread(threading.Thread):
         self.id = scheduled_task.pk
         self.queue = scheduled_task.routing_key
         self.scheduled_task = scheduled_task
+        self.start_time = scheduled_task.start_time
         self.run_now = run_now
+        self.first = True
         self.active = True
         self.filters = filters
         self.inactive_reason = ''
@@ -36,9 +38,13 @@ class ScheduledTaskThread(threading.Thread):
         checks to make sure that the task has not been deactivated/deleted in the mean time, and that the manager
         has not been stopped, then publishes it to  the queue
         """
-        interval = self.scheduled_task.multiplier * self.scheduled_task.interval_count
 
         count = 0
+        if self.start_time:
+            now=time.localtime().tm_hour*3600 + time.localtime().tm_min*60
+            interval=self.start_time - now if self.start_time > now else 86400 - now + self.start_time
+        else: interval = self.scheduled_task.multiplier * self.scheduled_task.interval_count
+
         if self.run_now:
             self.scheduled_task.publish()
 
@@ -48,12 +54,12 @@ class ScheduledTaskThread(threading.Thread):
                     if self.inactive_reason:
                         print('Thread stop has been requested because of the following reason: %s.\n Stopping the '
                               'thread' % self.inactive_reason)
-
                     return
 
                 try:
                     self.scheduled_task = ScheduledTask.objects.get(pk=self.scheduled_task.pk, **self.filters)
-                    interval = self.scheduled_task.multiplier * self.scheduled_task.interval_count
+                    if not self.first:
+                       interval = self.scheduled_task.multiplier * self.scheduled_task.interval_count
 
                 except ObjectDoesNotExist:
                     print('Current task has been removed from the queryset. Stopping the thread')
@@ -64,6 +70,8 @@ class ScheduledTaskThread(threading.Thread):
 
             print('Publishing message %s' % self.scheduled_task.task)
             self.scheduled_task.publish()
+            self.first=False
+            interval = self.scheduled_task.multiplier * self.scheduled_task.interval_count
             count = 0
 
 

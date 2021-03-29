@@ -172,7 +172,7 @@ class Command(BaseCommand):
 
         elif mode == 'status':
             if self.pid:
-                self.stdout.write(self.style.SUCCESS('Service is running. PID: %i' % self.pid))
+                self.stdout.write(self.style.SUCCESS('Service v:ib is running. PID: %i' % self.pid))
             else:
                 self.stdout.write(self.style.ERROR('Service is NOT running'))
 
