@@ -2,9 +2,9 @@
 name = "django-carrot"
 version = "1.5.0"
 description = "A RabbitMQ asynchronous task queue for Django."
-authors = ["Christoper Davies <christopherdavies553@gmail.com>"]
+authors = ["Ibere Luiz Di Tizio Jr <ibere.tizio@gmail.com>"]
 license = "Apache-2.0"
-repository = "https://github.com/chris104957/django-carrot"
+repository = "https://github.com/IbereJr/django-carrot"
 homepage = "https://django-carrot.readthedocs.io"
 readme = "README.rst"
 classifiers = [

@@ -27,13 +27,13 @@ setup(
     license='Apache Software License',
     description='A RabbitMQ asynchronous task queue for Django.',
     long_description=readme(),
-    author='Christopher Davies',
-    author_email='christopherdavies553@gmail.com',
+    author='Ibere Luiz Di Tizio Jr',
+    author_email='ibere.tizio@gmail.com',
     url='https://django-carrot.readthedocs.io',
-    home_page='https://github.com/chris104957/django-carrot',
+    home_page='https://github.com/IbereJr/django-carrot',
     project_urls={
         'Documentation': 'https://django-carrot.readthedocs.io',
-        'Source': 'https://github.com/chris104957/django-carrot',
+        'Source': 'https://github.com/IbereJr/django-carrot',
     },
 
     classifiers=[
