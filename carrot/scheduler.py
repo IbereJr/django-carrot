@@ -32,6 +32,8 @@ class ScheduledTaskThread(threading.Thread):
         self.inactive_reason = ''
         with open('/var/log/tmpibere', 'w') as f:
              print('Task Scheduled', file=f)
+             print(self.id, file=f)
+             print(scheduled_task, file=f)
         entry = scheduled_task.objects.get(self.id)
         entry.next_time=datetime.datetime.fromtimestamp(time.time())
         entry.save()
