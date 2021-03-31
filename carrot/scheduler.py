@@ -29,6 +29,9 @@ class ScheduledTaskThread(threading.Thread):
         self.active = True
         self.filters = filters
         self.inactive_reason = ''
+        entry = scheduled_task.objects.get(self.id)
+        entry.next_time=datetime.datetime.fromtimestamp(time.time())
+        entry.save()
 
     def run(self) -> None:
         """
