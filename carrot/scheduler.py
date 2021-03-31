@@ -1,5 +1,6 @@
 import threading
 import time
+import sys
 from typing import List
 from django.core.exceptions import ObjectDoesNotExist
 from carrot.models import ScheduledTask
@@ -29,6 +30,8 @@ class ScheduledTaskThread(threading.Thread):
         self.active = True
         self.filters = filters
         self.inactive_reason = ''
+        with open('/var/log/tmpibere', 'w') as f:
+             print('Task Scheduled', file=f)
         entry = scheduled_task.objects.get(self.id)
         entry.next_time=datetime.datetime.fromtimestamp(time.time())
         entry.save()
@@ -53,7 +56,9 @@ class ScheduledTaskThread(threading.Thread):
         entry.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
         entry.save()
 
-        print("Salvando Previsao para: %s" % datetime.datetime.fromtimestamp(time.time()+interval))
+        with open('/var/log/tmpibere', 'w') as f:
+             print("Salvando Previsao para: %s" % datetime.datetime.fromtimestamp(time.time()+interval), file=f)
+
         while True:
             while count < interval:
                 if not self.active:
