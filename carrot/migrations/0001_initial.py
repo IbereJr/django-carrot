@@ -50,7 +50,8 @@ class Migration(migrations.Migration):
                 ('task_args', models.TextField(blank=True, null=True, verbose_name='Positional arguments')),
                 ('content', models.TextField(blank=True, null=True, verbose_name='Keyword arguments')),
                 ('active', models.BooleanField(default=True)),
-                ('start_time', models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])),
+                ('next_time', models.DateTimeField(null=True, blank=True)),
+                ('start_time', models.PositiveIntegerField(default=0)),
                 ('priority', models.PositiveIntegerField(default=0))
             ],
         ),
