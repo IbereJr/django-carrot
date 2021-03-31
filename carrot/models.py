@@ -129,6 +129,7 @@ class ScheduledTask(models.Model):
 
     exchange = models.CharField(max_length=200, blank=True, null=True)
     start_time = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0)])
+    next_time = models.DateTimeField(null=True, blank=True)
     routing_key = models.CharField(max_length=200, blank=True, null=True)
     queue = models.CharField(max_length=200, blank=True, null=True)
     task = models.CharField(max_length=200)

@@ -1,9 +1,7 @@
 import threading
 import time
 from typing import List
-
 from django.core.exceptions import ObjectDoesNotExist
-
 from carrot.models import ScheduledTask
 
 
@@ -47,6 +45,10 @@ class ScheduledTaskThread(threading.Thread):
 
         if self.run_now:
             self.scheduled_task.publish()
+        
+
+        self.scheduled_task.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
+        self.scheduled_task.save()
 
         while True:
             while count < interval:
@@ -73,6 +75,8 @@ class ScheduledTaskThread(threading.Thread):
             self.first=False
             interval = self.scheduled_task.multiplier * self.scheduled_task.interval_count
             count = 0
+            self.scheduled_task.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
+            self.scheduled_task.save()
 
 
 class ScheduledTaskManager(object):
