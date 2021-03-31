@@ -46,10 +46,11 @@ class ScheduledTaskThread(threading.Thread):
         if self.run_now:
             self.scheduled_task.publish()
         
+        entry = scheduled_task.objects.get(self.id)
+        entry.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
+        entry.save()
 
-        self.scheduled_task.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
-        self.scheduled_task.save()
-
+        print("Salvando Previsao para: %s" % datetime.datetime.fromtimestamp(time.time()+interval))
         while True:
             while count < interval:
                 if not self.active:
@@ -75,8 +76,10 @@ class ScheduledTaskThread(threading.Thread):
             self.first=False
             interval = self.scheduled_task.multiplier * self.scheduled_task.interval_count
             count = 0
-            self.scheduled_task.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
-            self.scheduled_task.save()
+            entry = scheduled_task.objects.get(self.id)
+            entry.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
+            entry.save()
+            print("Salvando Previsao para: %s" % datetime.datetime.fromtimestamp(time.time()+interval))
 
 
 class ScheduledTaskManager(object):
