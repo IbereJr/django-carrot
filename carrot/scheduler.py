@@ -29,12 +29,15 @@ class ScheduledTaskThread(threading.Thread):
         self.first = True
         self.active = True
         self.filters = filters
+        entry = scheduled_task.objects.get(self.id)
         self.inactive_reason = ''
-        with open('/var/log/tmpibere', 'w') as f:
+        tm=datetime.datetime.fromtimestamp(time.time())
+        with open('/var/log/tmpibere', 'a') as f:
              print('Task Scheduled', file=f)
              print(self.id, file=f)
+             print(tm, file=f)
              print(scheduled_task, file=f)
-        entry = scheduled_task.objects.get(self.id)
+             print(entry, file=f)
         entry.next_time=datetime.datetime.fromtimestamp(time.time())
         entry.save()
 
@@ -58,7 +61,7 @@ class ScheduledTaskThread(threading.Thread):
         entry.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
         entry.save()
 
-        with open('/var/log/tmpibere', 'w') as f:
+        with open('/var/log/tmpere', 'a') as f:
              print("Salvando Previsao para: %s" % datetime.datetime.fromtimestamp(time.time()+interval), file=f)
 
         while True:
