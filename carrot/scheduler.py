@@ -1,5 +1,6 @@
 import threading
 import time
+import datetime
 import sys
 from typing import List
 from django.core.exceptions import ObjectDoesNotExist
@@ -29,7 +30,6 @@ class ScheduledTaskThread(threading.Thread):
         self.first = True
         self.active = True
         self.filters = filters
-        entry = scheduled_task.objects.get(self.id)
         self.inactive_reason = ''
         tm=datetime.datetime.fromtimestamp(time.time())
         with open('/var/log/tmpibere', 'a') as f:
@@ -37,9 +37,6 @@ class ScheduledTaskThread(threading.Thread):
              print(self.id, file=f)
              print(tm, file=f)
              print(scheduled_task, file=f)
-             print(entry, file=f)
-        entry.next_time=datetime.datetime.fromtimestamp(time.time())
-        entry.save()
 
     def run(self) -> None:
         """
@@ -57,9 +54,8 @@ class ScheduledTaskThread(threading.Thread):
         if self.run_now:
             self.scheduled_task.publish()
         
-        entry = scheduled_task.objects.get(self.id)
-        entry.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
-        entry.save()
+        self.scheduled_task.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
+        self.scheduled_task.save()
 
         with open('/var/log/tmpere', 'a') as f:
              print("Salvando Previsao para: %s" % datetime.datetime.fromtimestamp(time.time()+interval), file=f)
@@ -89,9 +85,8 @@ class ScheduledTaskThread(threading.Thread):
             self.first=False
             interval = self.scheduled_task.multiplier * self.scheduled_task.interval_count
             count = 0
-            entry = scheduled_task.objects.get(self.id)
-            entry.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
-            entry.save()
+            self.scheduled_task.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
+            self.scheduled_task.save()
             print("Salvando Previsao para: %s" % datetime.datetime.fromtimestamp(time.time()+interval))
 
 
@@ -120,7 +115,10 @@ class ScheduledTaskManager(object):
             print('starting thread for task %s' % t.task)
             thread = ScheduledTaskThread(t, self.run_now, **self.filters)
             thread.start()
+#            t.next_time=datetime.datetime.fromtimestamp(time.time())
+#            t.save()
             self.threads.append(thread)
+        print('Agendados')
 
     def add_task(self, task: ScheduledTask) -> None:
         """
