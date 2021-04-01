@@ -521,7 +521,7 @@
         },
         fdttime(value) {
             if (value) {
-               return moment(String(value)).format('MM/DD/YYYY hh:mm')
+               return moment(String(value)).format('DD/MM/YYYY hh:mm')
             }
         },
         displayTime (time) {
@@ -836,6 +836,10 @@
               }, {
                 text: 'Task',
                 value: 'task',
+                align: 'left',
+              }, {
+                text: 'Next Execution',
+                value: 'next_time',
                 align: 'left',
               }, {
                 text: 'Interval',
