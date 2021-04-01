@@ -54,8 +54,13 @@ class ScheduledTaskThread(threading.Thread):
         if self.run_now:
             self.scheduled_task.publish()
         
-        self.scheduled_task.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
-        self.scheduled_task.save()
+        try:
+            self.scheduled_task = ScheduledTask.objects.get(pk=self.scheduled_task.pk, **self.filters)
+            self.scheduled_task.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
+            self.scheduled_task.save()
+        except ObjectDoesNotExist:
+            print('Current task has been removed from the queryset. Stopping the thread')
+            return
 
         with open('/var/log/tmpere', 'a') as f:
              print("Salvando Previsao para: %s" % datetime.datetime.fromtimestamp(time.time()+interval), file=f)
@@ -85,8 +90,13 @@ class ScheduledTaskThread(threading.Thread):
             self.first=False
             interval = self.scheduled_task.multiplier * self.scheduled_task.interval_count
             count = 0
-            self.scheduled_task.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
-            self.scheduled_task.save()
+            try:
+                self.scheduled_task = ScheduledTask.objects.get(pk=self.scheduled_task.pk, **self.filters)
+                self.scheduled_task.next_time=datetime.datetime.fromtimestamp(time.time()+interval)
+                self.scheduled_task.save()
+            except ObjectDoesNotExist:
+                print('Current task has been removed from the queryset. Stopping the thread')
+                return
             print("Salvando Previsao para: %s" % datetime.datetime.fromtimestamp(time.time()+interval))
 
 
