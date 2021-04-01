@@ -8,6 +8,7 @@
     <title>django-carrot monitor</title>
     <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
     <link href="{% static 'carrot/vuetify.min.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'carrot/moment.min.js' %}"></script>
     <!--<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">-->
 </head>
 <body>
@@ -316,7 +317,7 @@
                       <tr v-else @click="selectedScheduledTask = props.item">
                           <td>[{ props.item.task_name }]</td>
                           <td>[{ props.item.task }]</td>
-                          <td>[{ props.item.next_time }]</td>
+                          <td>[{ props.item.next_time | fdttime }]</td>
                           <td>Every [{ props.item.interval_count }] [{ props.item.interval_type }]</td>
                           <td><v-icon v-if="props.item.active">check</v-icon><v-icon v-else>close</v-icon></td>
                       </tr>
@@ -517,6 +518,11 @@
                 value = String(value).slice(0, 1000) + '...'
             }
             return value
+        },
+        fdttime(value) {
+            if (value) {
+               return moment(String(value)).format(‘MM/DD/YYYY hh:mm’)
+            }
         },
         displayTime (time) {
             return new Date(time).toLocaleString()
